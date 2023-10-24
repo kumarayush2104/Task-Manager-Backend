@@ -19,10 +19,12 @@
 const { createTask, fetchAllTasks, fetchTask, deleteTask, deleteAllTasks, updateTask } = require("./database");
 const express = require("express");
 const { warning, success } = require("./message");
+const cors = require("cors");
 
 // Express application defination
 const app = express();
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 // Application supported routes
 app.get("/api/tasks/", fetchAllTasks);
