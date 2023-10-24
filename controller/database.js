@@ -103,12 +103,12 @@ async function deleteTask(req, res) {
         if (!doesTaskExist) throw new Error("Task doesn't exist.");
 
         await task.findByIdAndDelete(taskId);
-        res.json({
+        res.status(200).json({
             success: true,
             message: doesTaskExist.taskName + " deleted successfully."
         });
     } catch (e) {
-        res.json({
+        res.status(500).json({
             success: false,
             message: e.message
         });
@@ -119,12 +119,12 @@ async function deleteTask(req, res) {
 async function deleteAllTasks(_, res) {
     try {
         await task.deleteMany({});
-        res.json({
+        res.status(200).json({
             success: true,
             message: "All the tasks has been deleted."
         })
     } catch (e) {
-        res.json({
+        res.status(500).json({
             success: false,
             message: e.message
         });
@@ -143,12 +143,12 @@ async function updateTask(req, res) {
         if (!doesTaskExist) throw new Error("Task doesn't exist.");
 
         await task.findOneAndUpdate({ _id: taskId }, { isCompleted: taskStatus });
-        res.json({
+        res.status(200).json({
             success: true,
             message: doesTaskExist.taskName + " updated successfully."
         });
     } catch (e) {
-        res.json({
+        res.status(500).json({
             success: false,
             message: e.message
         });
