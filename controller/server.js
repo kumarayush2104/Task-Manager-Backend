@@ -25,6 +25,7 @@ const cors = require("cors");
 const app = express();
 app.use(express.json({ extended: true }));
 app.use(cors());
+app.options("/api/task/:id", cors());
 
 // Application supported routes
 app.get("/api/tasks/", fetchAllTasks);
