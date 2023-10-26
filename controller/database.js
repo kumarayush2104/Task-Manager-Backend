@@ -18,7 +18,7 @@
 // Dependencies
 const mongoose = require("mongoose");
 const { task } = require("../model/taskmodel");
-const { validateTask, validateTaskId } = require("./validate");
+const { validateTaskName, validateTaskId } = require("./validate");
 const { success, error } = require("./message");
 
 // connectDatabase(url, database): establish a connection to mongodb with the provided url and database name
@@ -29,6 +29,21 @@ async function connectDatabase(databaseURL, databaseName) {
         console.log(success(`Connection with ${databaseName}@MongoDB is successful !`));
     } catch (e) {
         console.log(error(`Connection with ${databaseName}@MongoDB is failed: ${e.message}`));
+    }
+}
+
+// checkTaskExistence(taskId): Checks if any task associated with the provided taskId exists.
+async function checkTaskExistence(taskId) {
+    try {
+        validateTaskId(taskId);
+        const selectedTask = await task.findById(taskId);
+        if (selectedTask) {
+            return selectedTask;
+        } else {
+            throw new Error("Task doesn't exists.");;
+        }
+    } catch (e) {
+        throw new Error(e.message);
     }
 }
 
@@ -51,9 +66,7 @@ async function fetchAllTasks(_, res) {
 // fetchTask(request, response): fetches a specific task details using task id
 async function fetchTask(req, res) {
     try {
-        const taskId = req.params.id;
-        const selectedTask = await task.findById(taskId);
-
+        const selectedTask = await checkTaskExistence(req.params.id);
         res.status(200).json({
             success: true,
             message: selectedTask
@@ -71,13 +84,9 @@ async function fetchTask(req, res) {
 async function createTask(req, res) {
     try {
         const taskName = req.body.taskName;
-        if (!validateTask(taskName))
-            throw new Error("Task name must be at least 3 characters long and should not include special characters.");
+        validateTask(taskName);
 
-        const newTask = new task({
-            taskName: taskName
-        });
-
+        const newTask = new task({ taskName: taskName });
         await newTask.save();
 
         res.status(200).json({
@@ -97,15 +106,14 @@ async function createTask(req, res) {
 async function deleteTask(req, res) {
     try {
         const taskId = req.params.id;
-        if (!validateTaskId(taskId)) throw new Error("Invalid Task id.");
+        validateTaskId(taskId)
 
-        const doesTaskExist = await task.findById(taskId);
-        if (!doesTaskExist) throw new Error("Task doesn't exist.");
-
+        const selectedTask = await checkTaskExistence(taskId);
         await task.findByIdAndDelete(taskId);
+
         res.status(200).json({
             success: true,
-            message: doesTaskExist.taskName + " deleted successfully."
+            message: selectedTask.taskName + " deleted successfully."
         });
     } catch (e) {
         res.status(500).json({
@@ -131,21 +139,21 @@ async function deleteAllTasks(_, res) {
     }
 }
 
-// updateTask(request, response): updates an existing task
-async function updateTask(req, res) {
+// updateTaskStatus(request, response): updates the status of an existing task
+async function updateTaskStatus(req, res) {
     try {
         const taskId = req.params.id;
         const taskStatus = req.body.taskStatus;
 
-        if (!validateTaskId(taskId)) throw new Error("Invalid Task id.");
-        if(!taskStatus) throw new Error("Task status not provided.");
-        const doesTaskExist = await task.findById(taskId);
-        if (!doesTaskExist) throw new Error("Task doesn't exist.");
+        validateTaskId(taskId);
+        const selectedTask = await checkTaskExistence(taskId);
+        if (!taskStatus) throw new Error("Task status not provided.");
 
         await task.findOneAndUpdate({ _id: taskId }, { isCompleted: taskStatus });
+
         res.status(200).json({
             success: true,
-            message: doesTaskExist.taskName + " updated successfully."
+            message: selectedTask.taskName + "'s completion status updated successfully."
         });
     } catch (e) {
         res.status(500).json({
@@ -162,5 +170,5 @@ module.exports = {
     createTask,
     deleteTask,
     deleteAllTasks,
-    updateTask
+    updateTaskStatus,
 }

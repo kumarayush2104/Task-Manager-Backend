@@ -16,9 +16,9 @@
  */
 
 // Dependencies
-const { createTask, fetchAllTasks, fetchTask, deleteTask, deleteAllTasks, updateTask } = require("./database");
+const { createTask, fetchAllTasks, fetchTask, deleteTask, deleteAllTasks, updateTaskStatus } = require("./database");
 const express = require("express");
-const { warning, success } = require("./message");
+const { success, error } = require("./message");
 const cors = require("cors");
 
 // Express application defination
@@ -33,15 +33,15 @@ app.delete("/api/tasks/", deleteAllTasks);
 app.post("/api/task/", createTask);
 app.get("/api/task/:id", fetchTask);
 app.delete("/api/task/:id", deleteTask);
-app.patch("/api/task/:id", updateTask);
+app.patch("/api/task/:id", updateTaskStatus);
 
 // runServer(port): Starts the express server at provided port number.
 function runServer(port) {
     try {
         app.listen(port);
-        console.log(success("Task Manager server is running at port " + port));
+        console.log(success(`Task Manager server is running at port ${port}`));
     } catch (e) {
-        console.log(warning(e.message));
+        console.log(error(e.message));
     }
 }
 

@@ -16,44 +16,44 @@
  */
 
 // Dependencies
-const { warning, success } = require("./message");
+const { success } = require("./message");
 
 // checkConstants(port, databaseURL, databaseName): 
 // Checks existence of portNumber, database Url and databaseName
 function checkConstants(port, databaseURL, databaseName) {
-    if(!port) {
-        console.log(warning("Port number is not defined, using 5000."));
+    if (!port) {
+        throw new Error("Port number is not defined.");
     } else {
-        console.log(success("Port number is set to " + port));
+        console.log(success(`Port number is set to ${port}`));
     }
 
-    if(!databaseURL) {
-        console.log(warning("Database URL is not defined, using localhost."));
+    if (!databaseURL) {
+        throw new Error("Database URL is not defined.");
     } else {
-        console.log(success("Database URL is set to " + databaseURL));
+        console.log(success(`Database URL is set to ${databaseURL}`));
     }
 
-    if(!databaseName) {
-        console.log(warning("Database name is not defined, using Task-Manager"));
+    if (!databaseName) {
+        throw new Error("Database name is not defined.");
     } else {
-        console.log(success("Database name is set to " + databaseName));
+        console.log(success(`Database name is set to ${databaseName}`));
     }
 }
 
 // validateTask(taskName): Validates task name provided by the user
-function validateTask(taskName) {
-    if(!taskName) return false;
-    return taskName.match(/^[a-zA-Z0-9(\s)]{3,}$/);
+function validateTaskName(taskName) {
+    if (!taskName || !taskName.match(/^[a-zA-Z0-9(\s)]{3,}$/))
+        throw new Error("Task name must be at least 3 characters long and should not include special characters.");
 }
 
 // validateTaskId(taskId): Validates task's id provided by the user
 function validateTaskId(taskId) {
-    if(!taskId) return false;
-    return taskId.match(/[a-z0-9A-Z]{24}/)
+    if (!taskId || !taskId.match(/[a-z0-9A-Z]{24}/))
+        throw new Error("Invalid Task id.");
 }
 
 module.exports = {
-    validateTask,
+    validateTaskName,
     validateTaskId,
     checkConstants
 }
