@@ -17,17 +17,17 @@
 
 // error(message): prints string in red color
 function error(message) {
-    return "\x1b[31m" + message + "\x1b[0m";
+    return "\x1b[31m[E] " + message + "\x1b[0m";
 }
 
 // success(message): prints string in green color
 function success(message) {
-    return "\x1b[32m" + message + "\x1b[0m";
+    return "\x1b[32m[I] " + message + "\x1b[0m";
 }
 
 // warning(message): prints string in yellow color
 function warning(message) {
-    return "\x1b[33m" + message + "\x1b[0m";
+    return "\x1b[33m[W] " + message + "\x1b[0m";
 }
 
 module.exports = {

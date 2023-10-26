@@ -19,6 +19,7 @@
 const { runServer } = require("./controller/server");
 const { connectDatabase } = require("./controller/database");
 const { checkConstants } = require("./controller/validate");
+const { error } = require("./controller/message");
 require("dotenv").config();
 
 // Defining constants
@@ -28,9 +29,13 @@ const DB_NAME = process.env.DB_NAME;
 
 // Main function
 async function main() {
-    checkConstants(PORT, DB_URL, DB_NAME);
-    await connectDatabase(DB_URL || "localhost", DB_NAME || "Task-Manager");
-    runServer(PORT || 5000);
+    try {
+        checkConstants(PORT, DB_URL, DB_NAME);
+        await connectDatabase(DB_URL, DB_NAME);
+        runServer(PORT);
+    } catch (e) {
+        console.log(error(e.message));
+    }
 }
 
 // Calling main function

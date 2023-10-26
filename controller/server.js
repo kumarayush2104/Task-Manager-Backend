@@ -39,7 +39,7 @@ app.patch("/api/task/:id", updateTask);
 function runServer(port) {
     try {
         app.listen(port);
-        console.log(success("[I] Task Manager server is running at port " + port));
+        console.log(success("Task Manager server is running at port " + port));
     } catch (e) {
         console.log(warning(e.message));
     }

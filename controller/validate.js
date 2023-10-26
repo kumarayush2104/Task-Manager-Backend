@@ -22,21 +22,21 @@ const { warning, success } = require("./message");
 // Checks existence of portNumber, database Url and databaseName
 function checkConstants(port, databaseURL, databaseName) {
     if(!port) {
-        console.log(warning("[W] Port number is not defined, using 5000."));
+        console.log(warning("Port number is not defined, using 5000."));
     } else {
-        console.log(success("[I] Port number is set to " + port));
+        console.log(success("Port number is set to " + port));
     }
 
     if(!databaseURL) {
-        console.log(warning("[W] Database URL is not defined, using localhost."));
+        console.log(warning("Database URL is not defined, using localhost."));
     } else {
-        console.log(success("[I] Database URL is set to " + databaseURL));
+        console.log(success("Database URL is set to " + databaseURL));
     }
 
     if(!databaseName) {
-        console.log(warning("[W] Database name is not defined, using Task-Manager"));
+        console.log(warning("Database name is not defined, using Task-Manager"));
     } else {
-        console.log(success("[I] Database name is set to " + databaseName));
+        console.log(success("Database name is set to " + databaseName));
     }
 }
 

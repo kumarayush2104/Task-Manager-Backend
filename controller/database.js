@@ -22,13 +22,13 @@ const { validateTask, validateTaskId } = require("./validate");
 const { success, error } = require("./message");
 
 // connectDatabase(url, database): establish a connection to mongodb with the provided url and database name
-async function connectDatabase(url, database) {
+async function connectDatabase(databaseURL, databaseName) {
     try {
-        if (!url || !database) throw new Error("URL or Database name is invalid !");
-        await mongoose.connect("mongodb://" + url + ":27017/" + database);
-        console.log(success("[I] " + database + "@MongoDB is successful !"));
+        if (!databaseURL || !databaseName) throw new Error("URL or Database name is invalid !");
+        await mongoose.connect(`mongodb://${databaseURL}:27017/${databaseName}`);
+        console.log(success(`Connection with ${databaseName}@MongoDB is successful !`));
     } catch (e) {
-        console.log(error("[E] " + e.message));
+        console.log(error(`Connection with ${databaseName}@MongoDB is failed: ${e.message}`));
     }
 }
 
