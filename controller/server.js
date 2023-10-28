@@ -16,7 +16,7 @@
  */
 
 // Dependencies
-const { createTask, fetchAllTasks, fetchTask, deleteTask, deleteAllTasks, updateTaskStatus } = require("./database");
+const { createTask, fetchAllTasks, fetchTask, deleteTask, deleteAllTasks, updateTaskStatus, updateTask } = require("./database");
 const express = require("express");
 const { success, error } = require("./message");
 const cors = require("cors");
@@ -34,6 +34,7 @@ app.post("/api/task/", createTask);
 app.get("/api/task/:id", fetchTask);
 app.delete("/api/task/:id", deleteTask);
 app.patch("/api/task/:id", updateTaskStatus);
+app.put("/api/task/:id", updateTask);
 
 // runServer(port): Starts the express server at provided port number.
 function runServer(port) {

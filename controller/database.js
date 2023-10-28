@@ -32,7 +32,7 @@ async function connectDatabase(databaseURL, databaseName) {
     }
 }
 
-// checkTaskExistence(taskId): Checks if any task associated with the provided taskId exists.
+// checkTaskExistence(taskId): Checks if any task associated with the provided taskId exists
 async function checkTaskExistence(taskId) {
     try {
         validateTaskId(taskId);
@@ -84,14 +84,14 @@ async function fetchTask(req, res) {
 async function createTask(req, res) {
     try {
         const taskName = req.body.taskName;
-        validateTask(taskName);
+        validateTaskName(taskName);
 
         const newTask = new task({ taskName: taskName });
         await newTask.save();
 
         res.status(200).json({
             success: true,
-            message: taskName + " added successfully."
+            message: `${taskName} added successfully.`
         });
 
     } catch (e) {
@@ -113,7 +113,7 @@ async function deleteTask(req, res) {
 
         res.status(200).json({
             success: true,
-            message: selectedTask.taskName + " deleted successfully."
+            message: `${selectedTask.taskName} deleted successfully.`
         });
     } catch (e) {
         res.status(500).json({
@@ -153,7 +153,30 @@ async function updateTaskStatus(req, res) {
 
         res.status(200).json({
             success: true,
-            message: selectedTask.taskName + "'s completion status updated successfully."
+            message: `${selectedTask.taskName}'s completion status updated successfully.`
+        });
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: e.message
+        });
+    }
+}
+
+// updateTask(request, response): updates the name of an existing task
+async function updateTask(req, res) {
+    try {
+        const taskId = req.params.id;
+        const newTaskName = req.body.newTaskName;
+
+        validateTaskId(taskId);
+        validateTaskName(newTaskName);
+        const selectedTask = await checkTaskExistence(taskId);
+
+        await task.findOneAndUpdate({ _id: taskId }, { isCompleted: taskStatus });
+        res.status(200).json({
+            success: true,
+            message: `${selectedTask.taskName} is updated to ${newTaskName} successfully.`
         });
     } catch (e) {
         res.status(500).json({
@@ -171,4 +194,5 @@ module.exports = {
     deleteTask,
     deleteAllTasks,
     updateTaskStatus,
+    updateTask
 }
