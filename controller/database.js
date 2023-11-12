@@ -19,7 +19,7 @@
 const mongoose = require("mongoose");
 const { task } = require("../model/taskmodel");
 const { validateTaskName, validateTaskId } = require("./validate");
-const { success, error } = require("./message");
+const { success } = require("./message");
 
 // connectDatabase(url, database): establish a connection to mongodb with the provided url and database name
 async function connectDatabase(databaseURL, databaseName) {
@@ -28,7 +28,7 @@ async function connectDatabase(databaseURL, databaseName) {
         await mongoose.connect(`mongodb://${databaseURL}:27017/${databaseName}`);
         console.log(success(`Connection with ${databaseName}@MongoDB is successful !`));
     } catch (e) {
-        console.log(error(`Connection with ${databaseName}@MongoDB is failed: ${e.message}`));
+        throw new Error(`Connection with ${databaseName}@MongoDB is failed: ${e.message}`);
     }
 }
 
@@ -173,7 +173,7 @@ async function updateTask(req, res) {
         validateTaskName(newTaskName);
         const selectedTask = await checkTaskExistence(taskId);
 
-        await task.findOneAndUpdate({ _id: taskId }, { isCompleted: taskStatus });
+        await task.findOneAndUpdate({ _id: taskId }, { taskName: newTaskName });
         res.status(200).json({
             success: true,
             message: `${selectedTask.taskName} is updated to ${newTaskName} successfully.`
